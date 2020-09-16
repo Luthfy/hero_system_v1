@@ -1,5 +1,4 @@
 <?php
-namespace App;
 
 use App\User;
 use Illuminate\Database\Seeder;
@@ -17,7 +16,7 @@ class UserSeeder extends Seeder
         User::create([
             "name" => 'administrator',
             "email" => 'administrator@hero-indonesia.com',
-            "password" => Hash::make($value)
+            "password" => Hash::make('bjm12345')
         ]);
     }
 }
