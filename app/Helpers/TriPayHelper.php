@@ -3,10 +3,13 @@
 namespace App\Helpers;
 
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Request;
 
 class TriPayHelper
 {
-    private $api_key = "3b5c5854aae73361400751e81b454e262720e8ade1108a72";
+
+    private $api_key = "ad8gJo5r0i0dUjTj6wNkgUfcHXQGwT47";
     private $web_url = "https://tripay.co.id/api/v2/";
     private $headers = array();
 
@@ -18,9 +21,26 @@ class TriPayHelper
         );
     }
 
-    public function tripay_product()
+    public function tripay_produk_pembelian()
     {
+        return Http::post($this->web_url . 'pembelian/categpry');
+    }
 
+    public function handleCallback(Request $request)
+    {
+        $incomingSecret = $request->server('HTTP_X_CALLBACK_SECRET') ?? '';
+
+        if (! hash_equals($this->api_key, $incomingSecret))
+        {
+            Log::error('Invalid secret : ' . $this->api_key . " vs " . $incomingSecret);
+            return;
+        }
+
+        $json = $request->all();
+
+        Log::info('callback tripay : ' . $json);
+
+        return $json;
     }
 
 

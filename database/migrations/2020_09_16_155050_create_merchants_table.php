@@ -22,6 +22,11 @@ class CreateMerchantsTable extends Migration
             $table->string('name_merchant');
             $table->date('birthday_merchant')->nullable();
             $table->string('photo_merchant')->nullable();
+            $table->string('store_merchant')->nullable();
+            $table->string('idcard_merchant')->nullable();
+            $table->string('address_merchant')->nullable();
+            $table->string('lat_merchant')->nullable();
+            $table->string('long_merchant')->nullable();
             $table->string('fcm')->nullable();
             $table->string('status')->default(0);
             $table->uuid('uuid_member')->index();

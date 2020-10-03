@@ -22,6 +22,7 @@ class CreateCustomersTable extends Migration
             $table->string('name_customer');
             $table->date('birthday_customer')->nullable();
             $table->string('photo_customer')->nullable();
+            $table->string('idcard_customer')->nullable();
             $table->string('fcm')->nullable();
             $table->string('status')->default(0);
             $table->uuid('uuid_member')->index();

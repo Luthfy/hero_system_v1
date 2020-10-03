@@ -14,7 +14,7 @@ return [
     |
     */
 
-    'title' => 'AdminLTE 3',
+    'title' => 'HERO IDN',
     'title_prefix' => '',
     'title_postfix' => '',
 
@@ -45,12 +45,12 @@ return [
     |
     */
 
-    'logo' => '<b>Admin</b>LTE',
-    'logo_img' => 'vendor/adminlte/dist/img/AdminLTELogo.png',
+    'logo' => 'Hero Indonesia',
+    'logo_img' => '',
     'logo_img_class' => 'brand-image img-circle elevation-3',
     'logo_img_xl' => null,
     'logo_img_xl_class' => 'brand-image-xs',
-    'logo_img_alt' => 'AdminLTE',
+    'logo_img_alt' => 'hero',
 
     /*
     |--------------------------------------------------------------------------
@@ -85,8 +85,8 @@ return [
 
     'layout_topnav' => null,
     'layout_boxed' => null,
-    'layout_fixed_sidebar' => null,
-    'layout_fixed_navbar' => null,
+    'layout_fixed_sidebar' => true,
+    'layout_fixed_navbar' => true,
     'layout_fixed_footer' => null,
 
     /*
@@ -194,11 +194,11 @@ return [
 
     'login_url' => 'login',
 
-    'register_url' => 'register',
+    'register_url' => false,
 
-    'password_reset_url' => 'password/reset',
+    'password_reset_url' => false,
 
-    'password_email_url' => 'password/email',
+    'password_email_url' => false,
 
     'profile_url' => false,
 
@@ -233,7 +233,7 @@ return [
     'menu' => [
         [
             'text' => 'search',
-            'search' => true,
+            'search' => false,
             'topnav' => true,
         ],
         [
@@ -242,11 +242,125 @@ return [
             'can'  => 'manage-blog',
         ],
         [
-            'text'        => 'pages',
-            'url'         => 'admin/pages',
-            'icon'        => 'far fa-fw fa-file',
-            'label'       => 4,
-            'label_color' => 'success',
+            'text'        => 'Dashboard',
+            'url'         => 'home',
+            'icon'        => 'fas fa-fw fa-tachometer-alt mr-2',
+        ],
+        [
+            'text' => 'Master Data Affiliate',
+            'icon' => 'fas fa-fw fa-money-check mr-2',
+            'submenu' => [
+                [
+                    'text' => 'Level Member',
+                    'url'  => 'affiliate/levelmember',
+                    'icon' => 'fas fa-fw fa-mobile ml-2 mr-2'
+                ],
+                [
+                    'text' => 'Medals',
+                    'url'  => 'affiliate/medal_member',
+                    'icon' => 'fas fa-fw fa-mobile ml-2 mr-2'
+                ],
+                [
+                    'text' => 'Bonus Penarikan',
+                    'url'  => 'affiliate/bonus_penarikan',
+                    'icon' => 'fas fa-fw fa-mobile ml-2 mr-2'
+                ],
+                [
+                    'text' => 'Batasan Penarikan',
+                    'url'  => 'affiliate/bonus_penarikan',
+                    'icon' => 'fas fa-fw fa-mobile ml-2 mr-2'
+                ],
+                [
+                    'text' => 'Komisi Transaksi',
+                    'url'  => 'affiliate/komisi_transaksi',
+                    'icon' => 'fas fa-fw fa-mobile ml-2 mr-2'
+                ],
+            ]
+        ],
+        [
+            'text' => 'Master Data Produk',
+            'icon' => 'fas fa-fw fa-money-check mr-2',
+            'submenu' => [
+                [
+                    'text' => 'Pulsa dan Paket Data',
+                    'url'  => 'prabayar',
+                    'icon' => 'fas fa-fw fa-mobile ml-2 mr-2'
+                ],
+                [
+                    'text' => 'PLN dan Pascabayar',
+                    'url'  => 'passcabayar',
+                    'icon' => 'fas fa-fw fa-mobile ml-2 mr-2'
+                ],
+            ]
+        ],
+        [
+            'text' => 'Hero Transaction',
+            'icon' => 'fas fa-fw fa-cash-register mr-2',
+            'submenu' => [
+                [
+                    'text' => 'Member Transaction',
+                    'url' => 'transaction/member',
+                    'icon' => 'fas fa-fw fa-none ml-2 mr-2'
+                ]
+            ]
+        ],
+        [
+            'text'    => 'Member Hero',
+            'icon'    => 'fas fa-fw fa-users mr-2',
+            'submenu' => [
+                [
+                    'text' => 'Member',
+                    'url'  => 'members',
+                    'icon' => 'fas fa-fw fa-user ml-2 mr-2'
+                ],
+                [
+                    'text' => 'Customer',
+                    'url' => 'customers',
+                    'icon' => 'fas fa-fw fa-user ml-2 mr-2'
+                ],
+                [
+                    'text' => 'Driver',
+                    'url' => 'drivers',
+                    'icon' => 'fas fa-fw fa-user ml-2 mr-2'
+                ],
+                [
+                    'text' => 'Merchant',
+                    'url' => 'merchants',
+                    'icon' => 'fas fa-fw fa-user ml-2 mr-2'
+                ]
+            ],
+        ],
+        [
+            "text" => 'Wallets',
+            "url" => 'wallets',
+            "icon" => 'fas fa-fw fa-wallet mr-2'
+        ],
+        ['header' => 'Application Setting'],
+        [
+            'text' => 'Version App Release',
+            'url' => 'version_setting',
+            'icon' => 'fas fa-fw fa-code-branch mr-2'
+        ],
+        [
+            'text' => 'Layanan Pihak Ketiga',
+            'icon' => 'fas fa-fw fa-none mr-2',
+            'submenu' => [
+                [
+                    'text' => 'CekMutasi',
+                    'url' => 'third-part/cek-mutasi',
+                    'icon' => 'fas fa-fw fa-none mx-2'
+                ],
+                [
+                    'text' => 'Tripay',
+                    'url' => 'third-part/tripay',
+                    'icon' => 'fas fa-fw fa-none mx-2'
+                ],
+                [
+                    'text' => 'WooWa Notif',
+                    'url' => 'third-part/woowa',
+                    'icon' => 'fas fa-fw fa-none mx-2'
+                ],
+            ]
         ],
         ['header' => 'account_settings'],
         [
@@ -296,23 +410,7 @@ return [
                     'url'  => '#',
                 ],
             ],
-        ],
-        ['header' => 'labels'],
-        [
-            'text'       => 'important',
-            'icon_color' => 'red',
-            'url'        => '#',
-        ],
-        [
-            'text'       => 'warning',
-            'icon_color' => 'yellow',
-            'url'        => '#',
-        ],
-        [
-            'text'       => 'information',
-            'icon_color' => 'cyan',
-            'url'        => '#',
-        ],
+        ]
     ],
 
     /*
@@ -351,21 +449,21 @@ return [
 
     'plugins' => [
         'Datatables' => [
-            'active' => false,
+            'active' => true,
             'files' => [
                 [
                     'type' => 'js',
-                    'asset' => false,
+                    'asset' => true,
                     'location' => '//cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js',
                 ],
                 [
                     'type' => 'js',
-                    'asset' => false,
+                    'asset' => true,
                     'location' => '//cdn.datatables.net/1.10.19/js/dataTables.bootstrap4.min.js',
                 ],
                 [
                     'type' => 'css',
-                    'asset' => false,
+                    'asset' => true,
                     'location' => '//cdn.datatables.net/1.10.19/css/dataTables.bootstrap4.min.css',
                 ],
             ],

@@ -17,7 +17,9 @@
         "laravel/passport": "9",
         "laravel/tinker": "^2.0",
         "laravel/ui": "^2.4",
-        "ramsey/uuid": "^4.1"
+        "ramsey/uuid": "^4.1",
+        "trijayadigital/cekmutasi-laravel": "dev-master",
+        "yajra/laravel-datatables": "^1.5"
     },
     "require-dev": {
         "facade/ignition": "^2.0",

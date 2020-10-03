@@ -20,11 +20,11 @@ class CreateWalletsTable extends Migration
             $table->bigInteger('heropoin_wallet')->unsigned()->default(0);
             $table->bigInteger('herobonus_wallet')->unsigned()->default(0);
             $table->uuid('uuid_member')->index();
-            $table->uuid('uuid_level_member')->index();
+            $table->foreignId('id_level_member')->index();
             $table->timestamps();
 
             $table->foreign('uuid_member')->references('uuid_member')->on('members')->onUpdate('cascade');
-            $table->foreign('uuid_level_member')->references('uuid_level_member')->on('level_members')->onUpdate('cascade');
+            $table->foreign('id_level_member')->references('id')->on('level_members')->onUpdate('cascade');
         });
     }
 

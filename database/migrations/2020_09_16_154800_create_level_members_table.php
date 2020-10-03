@@ -15,8 +15,9 @@ class CreateLevelMembersTable extends Migration
     {
         Schema::create('level_members', function (Blueprint $table) {
             $table->id();
-            $table->uuid('uuid_level_member')->unique();
             $table->string('name_level_member');
+            $table->bigInteger('poin_level_member')->default(0);
+            $table->integer('bonus_sponsor')->default(0);
             $table->string('description_level_member')->nullable();
             $table->timestamps();
         });
