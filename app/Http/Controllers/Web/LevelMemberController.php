@@ -11,6 +11,16 @@ use LevelMembersTableSeeder;
 class LevelMemberController extends Controller
 {
     /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
+    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
@@ -80,7 +90,12 @@ class LevelMemberController extends Controller
      */
     public function edit($id)
     {
-        //
+        $data = [
+            "title" => "Ubah Level Member",
+            "data" => LevelMember::find($id)
+        ];
+
+        return view('levelmember.form', $data);
     }
 
     /**
@@ -92,7 +107,23 @@ class LevelMemberController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $request->validate([
+            "name_level_member" => "required"
+        ]);
+
+        $levelmember = LevelMember::find($id);
+        $levelmember->name_level_member         = $request->name_level_member;
+        $levelmember->poin_level_member         = $request->poin_level_member;
+        $levelmember->bonus_sponsor             = $request->bonus_sponsor;
+        $levelmember->description_level_member  = $request->description_level_member;
+        $update = $levelmember->save();
+
+        if ($update)
+        {
+            return redirect('affiliate/levelmember')->with('info','Perubahan Berhasil');
+        }
+
+
     }
 
     /**
@@ -103,6 +134,6 @@ class LevelMemberController extends Controller
      */
     public function destroy($id)
     {
-        //
+        return LevelMember::find($id)->delete();
     }
 }

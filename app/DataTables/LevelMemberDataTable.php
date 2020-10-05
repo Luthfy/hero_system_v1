@@ -25,7 +25,7 @@ class LevelMemberDataTable extends DataTable
                 return $levelmember->updated_at->format('yy-m-d h:i:s');
             })
             ->addColumn('action', function($levelmember) {
-                return "<a href='levelmember/$levelmember->id/edit' class='text-success'>Ubah</a>";
+                return "<a href='levelmember/$levelmember->id/edit' class='text-success mr-2'><i class='far fa-edit'></i></a><a class='text-danger' onclick='delete_level_member($levelmember->id)'><i class='far fa-trash-alt'></i></a>";
             });
     }
 

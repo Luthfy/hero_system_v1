@@ -253,12 +253,12 @@ return [
                 [
                     'text' => 'Level Member',
                     'url'  => 'affiliate/levelmember',
-                    'icon' => 'fas fa-fw fa-mobile ml-2 mr-2'
+                    'icon' => 'fas fa-fw ml-2 mr-2'
                 ],
                 [
                     'text' => 'Medals',
-                    'url'  => 'affiliate/medal_member',
-                    'icon' => 'fas fa-fw fa-mobile ml-2 mr-2'
+                    'url'  => 'affiliate/medalmember',
+                    'icon' => 'fas fa-fw ml-2 mr-2'
                 ],
                 [
                     'text' => 'Bonus Penarikan',
@@ -494,11 +494,11 @@ return [
             ],
         ],
         'Sweetalert2' => [
-            'active' => false,
+            'active' => true,
             'files' => [
                 [
                     'type' => 'js',
-                    'asset' => false,
+                    'asset' => true,
                     'location' => '//cdn.jsdelivr.net/npm/sweetalert2@8',
                 ],
             ],

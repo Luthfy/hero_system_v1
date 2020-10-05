@@ -37,8 +37,7 @@
             cancelButtonColor: '#d33',
             confirmButtonText: 'Yes, hapus sekarang!'
         }).then((result) => {
-
-            if (result.value) {
+            if (result) {
 
                 $.ajaxSetup({
                     headers: {
@@ -50,8 +49,10 @@
                     type : "DELETE",
                     url : "levelmember/"+id,
                     success : function(data, status) {
+
                         console.log(data)
-                        setTimeout(function(){$('#levelmember_table').DataTable().ajax.reload();}, 1000);
+                        window.location.reload()
+
                         Swal.fire(
                             'Dihapus!',
                             'Level Member telah dihapus',
@@ -66,6 +67,7 @@
                         )
                     }
                 });
+
 
             }
         })
