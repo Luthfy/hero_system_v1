@@ -14,37 +14,48 @@
             <div class="card">
                 <div class="card-body">
                     @if ($data == null)
-                        {!! Form::open(['url' => 'affiliate/levelmember', 'method' => 'post']) !!}
+                        {!! Form::open(['method' => 'post', 'url' => 'affiliate/medalmember', 'files' => true]) !!}
                     @else
-                        {!! Form::model($data, ['url' => "affiliate/levelmember/$data->id", 'method' => 'put']) !!}
+                        {!! Form::model($data, ['method'=>'put', 'url' => url("affiliate/medalmember/$data->id"), 'files' => true]) !!}
                     @endif
 
                     <div class="form-group">
-                        {!! Form::label('name_level_member', 'Nama Level Member') !!}
-                        {!! Form::text('name_level_member', null, ['class'=>'form-control', 'placeholder'=>'Masukan Nama Level Member']) !!}
+                        {!! Form::label('name_medal', 'Nama Medal') !!}
+                        {!! Form::text('name_medal', null, ['class' => 'form-control', 'placeholder' => 'Masukan Nama Medal', 'require' => 'true']) !!}
                     </div>
 
                     <div class="form-group">
-                        {!! Form::label('poin_level_member', 'Poin') !!}
-                        {!! Form::number('poin_level_member', null, ['class'=>'form-control', 'placeholder'=>'Masukan Nama Level Member', 'min'=>0]) !!}
+                        {!! Form::label('reward_medal', 'Reward (%)') !!}
+                        {!! Form::number('reward_medal', null, ['class' => 'form-control', 'placeholder' => 'Masukan Persentase Reward', 'min' =>  0, 'max' => 100]) !!}
                     </div>
 
                     <div class="form-group">
-                        {!! Form::label('bonus_sponsor', 'Bonus Sponsor (%)') !!}
-                        {!! Form::number('bonus_sponsor', null, ['class'=>'form-control', 'placeholder'=>'Masukan Nama Level Member', 'min'=>0, 'max'=>100, 'step'=> 1]) !!}
+                        {!! Form::label('max_penarikan', 'Maximum Penarikan') !!}
+                        {!! Form::number('max_penarikan', null, ['class' => 'form-control', 'placeholder' => 'Masukan Nominal Maksimum Penarikan', 'min' => 0]) !!}
                     </div>
 
                     <div class="form-group">
-                        {!! Form::label('description_level_member', 'Deskripsi') !!}
-                        {!! Form::textarea('description_level_member', null, ['class'=>'form-control']) !!}
+                        {!! Form::label('min_saldo', 'Minimal Saldo Penarikan') !!}
+                        {!! Form::number('min_saldo', null, ['class' => 'form-control', 'placeholder' => 'Masukan Nominal Minimal Saldo Tersisa', 'min' => 0]) !!}
+                    </div>
+
+                    <div class="form-group">
+                        {!! Form::label('persyaratan_medal', 'Persyaratan Medal') !!}
+                        {!! Form::textarea('persyaratan_medal', null, ['class' => 'form-control']) !!}
+                    </div>
+
+                    <div class="form-group">
+                        {!! Form::label('icon_medal', 'Icon Medal' , ['class' => 'mr-2']) !!}
+                        {!! Form::file('icon_medal', ['class'=>'form-control']) !!}
                     </div>
 
                     <div class="form-group text-right">
                         <input type="reset" value="Batal" class="btn btn-danger">
-                        {!! Form::submit('Simpan Level Member', ['class'=>'btn btn-primary']) !!}
+                        {!! Form::submit('Simpan Medal', ['class'=>'btn btn-primary']) !!}
                     </div>
 
                     {!! Form::close() !!}
+
                 </div>
             </div>
         </div>

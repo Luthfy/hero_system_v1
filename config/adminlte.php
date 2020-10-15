@@ -261,19 +261,19 @@ return [
                     'icon' => 'fas fa-fw ml-2 mr-2'
                 ],
                 [
-                    'text' => 'Bonus Penarikan',
-                    'url'  => 'affiliate/bonus_penarikan',
-                    'icon' => 'fas fa-fw fa-mobile ml-2 mr-2'
+                    'text' => 'Bonus Generasi',
+                    'url'  => 'affiliate/bonusgenerasi',
+                    'icon' => 'fas fa-fw  ml-2 mr-2'
                 ],
                 [
                     'text' => 'Batasan Penarikan',
-                    'url'  => 'affiliate/bonus_penarikan',
-                    'icon' => 'fas fa-fw fa-mobile ml-2 mr-2'
+                    'url'  => 'affiliate/batasanpenarikan',
+                    'icon' => 'fas fa-fw ml-2 mr-2'
                 ],
                 [
                     'text' => 'Komisi Transaksi',
-                    'url'  => 'affiliate/komisi_transaksi',
-                    'icon' => 'fas fa-fw fa-mobile ml-2 mr-2'
+                    'url'  => 'affiliate/komisitransaksi',
+                    'icon' => 'fas fa-fw  ml-2 mr-2'
                 ],
             ]
         ],

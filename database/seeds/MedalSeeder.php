@@ -17,7 +17,7 @@ class MedalSeeder extends Seeder
             'reward_medal' => 2,
             'max_penarikan' => 1000000,
             'min_saldo' => 2000000,
-            'persyaratan_medal' => '16 Reseller Free <br />4 Ekonomi'
+            'persyaratan_medal' => '16 Reseller Free, 4 Ekonomi'
         ]);
 
         Medal::create([
@@ -25,7 +25,7 @@ class MedalSeeder extends Seeder
             'reward_medal' => 2,
             'max_penarikan' => 5000000,
             'min_saldo' => 2000000,
-            'persyaratan_medal' => '16 Reseller Free <br />4 Ekonomi <br />4 Ruby'
+            'persyaratan_medal' => '16 Reseller Free, 4 Ekonomi, 4 Ruby'
         ]);
 
         Medal::create([
@@ -33,7 +33,7 @@ class MedalSeeder extends Seeder
             'reward_medal' => 2,
             'max_penarikan' => 35000000,
             'min_saldo' => 2000000,
-            'persyaratan_medal' => '16 Reseller Free <br />4 Ekonomi <br />4 Ruby<br />4 Sapphire'
+            'persyaratan_medal' => '16 Reseller Free, 4 Ekonomi, 4 Rub, 4 Sapphire'
         ]);
 
         Medal::create([
@@ -41,7 +41,7 @@ class MedalSeeder extends Seeder
             'reward_medal' => 2,
             'max_penarikan' => 150000000,
             'min_saldo' => 2000000,
-            'persyaratan_medal' => '16 Reseller Free <br />4 Ekonomi <br />4 Ruby<br />4 Sapphire<br />4 Emerald'
+            'persyaratan_medal' => '16 Reseller Free, 4 Ekonomi, 4 Rub, 4 Sapphir, 4 Emerald'
         ]);
 
         Medal::create([
@@ -49,7 +49,7 @@ class MedalSeeder extends Seeder
             'reward_medal' => 1,
             'max_penarikan' => 500000000,
             'min_saldo' => 2000000,
-            'persyaratan_medal' => '16 Reseller Free <br />4 Ekonomi <br />4 Ruby<br />4 Sapphire<br />4 Emerald<br />4 Diamond'
+            'persyaratan_medal' => '16 Reseller Free, 4 Ekonomi, 4 Rub, 4 Sapphir, 4 Emeral, 4 Diamond'
         ]);
 
         Medal::create([
@@ -57,7 +57,7 @@ class MedalSeeder extends Seeder
             'reward_medal' => 1,
             'max_penarikan' => 1000000000,
             'min_saldo' => 2000000,
-            'persyaratan_medal' => '16 Reseller Free <br />4 Ekonomi <br />4 Ruby<br />4 Sapphire<br />4 Emerald<br />4 Diamond<br />4 crown'
+            'persyaratan_medal' => '16 Reseller Free, 4 Ekonomi, 4 Rub, 4 Sapphir, 4 Emeral, 4 Diamon, 4 crown'
         ]);
     }
 }

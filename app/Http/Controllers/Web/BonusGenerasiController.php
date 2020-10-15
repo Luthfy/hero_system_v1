@@ -2,13 +2,12 @@
 
 namespace App\Http\Controllers\Web;
 
-use App\DataTables\LevelMemberDataTable;
+use App\Models\BonusGenerasi;
+use App\DataTables\BonusGenerasiDataTable;
 use App\Http\Controllers\Controller;
-use App\Models\LevelMember;
 use Illuminate\Http\Request;
-use LevelMembersTableSeeder;
 
-class LevelMemberController extends Controller
+class BonusGenerasiController extends Controller
 {
     /**
      * Create a new controller instance.
@@ -25,9 +24,9 @@ class LevelMemberController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(LevelMemberDataTable $datatable)
+    public function index(BonusGenerasiDataTable $datatable)
     {
-        return $datatable->render('levelmember.index');
+        return $datatable->render('bonusgenerasi.index');
     }
 
     /**
@@ -38,11 +37,10 @@ class LevelMemberController extends Controller
     public function create()
     {
         $data = [
-            "title" => "Tambah Level Member",
-            "data" => null
+            'title' => 'Tambah Bonus Generasi',
+            'data' => null
         ];
-
-        return view('levelmember.form', $data);
+        return view('batasanpenarikan.form', $data);
     }
 
     /**
@@ -54,21 +52,14 @@ class LevelMemberController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            "name_level_member" => "required"
+            'level_generasi' => 'required'
         ]);
 
-        $levelmember = new LevelMember();
-        $levelmember->name_level_member = $request->name_level_member;
-        $levelmember->poin_level_member = $request->poin_level_member ?? 0;
-        $levelmember->bonus_sponsor     = $request->bonus_sponsor ?? 0;
-        $levelmember->description_level_member= $request->description_level_member;
-        $create = $levelmember->save();
+        $bonus = BonusGenerasi::create($request->all());
 
-        if ($create)
-        {
-            return redirect('affiliate/levelmember')->with('info','Penambahan Berhasil');
+        if ($bonus) {
+            return redirect('affiliate/bonusgenerasi')->with('info', 'Level ' . $request->level_generasi . ' telah ditambahkan');
         }
-
     }
 
     /**
@@ -79,7 +70,7 @@ class LevelMemberController extends Controller
      */
     public function show($id)
     {
-        //
+
     }
 
     /**
@@ -91,11 +82,10 @@ class LevelMemberController extends Controller
     public function edit($id)
     {
         $data = [
-            "title" => "Ubah Level Member",
-            "data" => LevelMember::find($id)
+            'title' => 'Ubah Bonus Generasi',
+            'data' => BonusGenerasi::find($id)
         ];
-
-        return view('levelmember.form', $data);
+        return view('batasanpenarikan.form', $data);
     }
 
     /**
@@ -108,22 +98,17 @@ class LevelMemberController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            "name_level_member" => "required"
+            'level_generasi' => 'required'
         ]);
 
-        $levelmember = LevelMember::find($id);
-        $levelmember->name_level_member         = $request->name_level_member;
-        $levelmember->poin_level_member         = $request->poin_level_member;
-        $levelmember->bonus_sponsor             = $request->bonus_sponsor;
-        $levelmember->description_level_member  = $request->description_level_member;
-        $update = $levelmember->save();
+        $bonus = BonusGenerasi::find($id);
+        $bonus->level_generasi = $request->level_generasi;
+        $bonus->bonus_persen =  $request->bonus_persen;
+        $update = $bonus->save();
 
-        if ($update)
-        {
-            return redirect('affiliate/levelmember')->with('info','Perubahan Berhasil');
+        if ($update) {
+            return redirect('affiliate/bonusgenerasi')->with('info', 'Level ' . $request->level_generasi . ' telah diperbarui');
         }
-
-
     }
 
     /**
@@ -134,6 +119,6 @@ class LevelMemberController extends Controller
      */
     public function destroy($id)
     {
-        return LevelMember::find($id)->delete();
+        return BonusGenerasi::find($id)->delete();
     }
 }

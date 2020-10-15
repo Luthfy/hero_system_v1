@@ -2,19 +2,31 @@
 
 namespace App\Http\Controllers\Web;
 
+use App\Models\Medal;
+use App\DataTables\MedalMemberDataTable;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 class MedalMemberController extends Controller
 {
     /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
+    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(MedalMemberDataTable $datatable)
     {
-        //
+        return $datatable->render('medalmember.index');
     }
 
     /**
@@ -24,7 +36,11 @@ class MedalMemberController extends Controller
      */
     public function create()
     {
-        //
+        $data = [
+            'title' => 'Tambah Medal',
+            'data' => null
+        ];
+        return view('medalmember.form', $data);
     }
 
     /**
@@ -35,7 +51,33 @@ class MedalMemberController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name_medal' => 'required'
+        ]);
+
+        $medal = new Medal();
+
+        if ($request->hasFile('icon_medal'))
+        {
+            $request->validate([
+                'icon_medal' => 'mimes:png,jpg,jpeg|max:1024'
+            ]);
+
+            $filename  = time() . '_' . $request->file('icon_medal')->getClientOriginalName();
+
+            $filepath = $request->file('icon_medal')->storeAs('public/storage/medals', $filename);
+
+            $medal->icon_medal = $filepath;
+        }
+
+        $medal->name_medal = $request->name_medal;
+        $medal->reward_medal = $request->reward_medal;
+        $medal->max_penarikan = $request->max_penarikan;
+        $medal->min_saldo = $request->min_saldo;
+        $medal->persyaratan_medal = $request->persyaratan_medal;
+        $save = $medal->save();
+
+        return redirect('affiliate/medalmember')->with('info', $medal->name_medal . " Berhasil Disimpan");
     }
 
     /**
@@ -57,7 +99,11 @@ class MedalMemberController extends Controller
      */
     public function edit($id)
     {
-        //
+        $data = [
+            'title' => 'Edit Medal Member',
+            'data' => Medal::find($id)
+        ];
+        return view('medalmember.form', $data);
     }
 
     /**
@@ -69,7 +115,49 @@ class MedalMemberController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        if ($request->hasFile('icon_medal'))
+        {
+            $request->validate([
+                'name_medal' => 'required',
+                'icon_medal' => 'mimes:jpeg,jpg,png|max:1014'
+            ]);
+
+            $medal = Medal::find($id);
+
+            if (! empty($medal->icon_medal))
+            {
+                unlink($medal->icon_medal);
+            }
+
+            $filename           = time() . '_' . $request->file('icon_medal')->getClientOriginalName();
+            $filepath           = $request->file('icon_medal')->storeAs('public/storage/medals', $filename);
+            $medal->icon_medal  = $filepath;
+
+            $medal->name_medal          = $request->name_medal;
+            $medal->reward_medal        = $request->reward_medal;
+            $medal->max_penarikan       = $request->max_penarikan;
+            $medal->min_saldo           = $request->min_saldo;
+            $medal->persyaratan_medal   = $request->persyaratan_medal;
+            $medal->save();
+
+            return redirect('affiliate/medalmember')->with('info', $medal->name_medal . " telah diperbarui!");
+        }
+        else
+        {
+            $request->validate([
+                'name_medal' => 'required'
+            ]);
+
+            $medal = Medal::find($id);
+            $medal->name_medal          = $request->name_medal;
+            $medal->reward_medal        = $request->reward_medal;
+            $medal->max_penarikan       = $request->max_penarikan;
+            $medal->min_saldo           = $request->min_saldo;
+            $medal->persyaratan_medal   = $request->persyaratan_medal;
+            $medal->save();
+
+            return redirect('affiliate/medalmember')->with('info', $medal->name_medal . " telah diperbarui!");
+        }
     }
 
     /**
@@ -80,6 +168,6 @@ class MedalMemberController extends Controller
      */
     public function destroy($id)
     {
-        //
+        return Medal::find($id)->delete();
     }
 }

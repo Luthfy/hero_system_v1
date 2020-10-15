@@ -16,7 +16,7 @@ class CreateKomisiTransaksiTable extends Migration
         Schema::create('komisi_transaksi', function (Blueprint $table) {
             $table->id();
             $table->string('jenis_komisi');
-            $table->integer('besaran_komisi');
+            $table->integer('besaran_komisi')->default(0);
             $table->string('jenis_besaran')->default('persen');
             $table->timestamps();
         });

@@ -16,8 +16,8 @@ class CreateBatasanPenarikanTable extends Migration
         Schema::create('batasan_penarikan', function (Blueprint $table) {
             $table->id();
             $table->string('jenis_batasan');
-            $table->integer('besaran_batasan');
-            $table->string('estimasi_waktu_batasan');
+            $table->integer('besaran_batasan')->default(0);
+            $table->string('estimasi_waktu_batasan')->default('1');
             $table->timestamps();
         });
     }

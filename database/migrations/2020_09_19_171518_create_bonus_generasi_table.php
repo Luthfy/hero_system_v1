@@ -16,7 +16,7 @@ class CreateBonusGenerasiTable extends Migration
         Schema::create('bonus_generasi', function (Blueprint $table) {
             $table->id();
             $table->integer('level_generasi');
-            $table->double('bonus_persen');
+            $table->double('bonus_persen')->default(0);
             $table->timestamps();
         });
     }

@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -45,14 +46,9 @@ Route::get('/version_setting', 'Web\VersionController@index')->name('version_set
 
 // ROUTE AFFILIATE
 Route::group(['prefix' => 'affiliate'], function () {
-    Route::get('levelmember', 'Web\LevelMemberController@index')->name('levelmember');
-    Route::get('levelmember/create', 'Web\LevelMemberController@create')->name('levelmember.create');
-    Route::get('levelmember/{id}/edit', 'Web\LevelMemberController@edit')->name('levelmember.edit');
-    Route::post('levelmember', 'Web\LevelMemberController@store')->name('levelmember.store');
-    Route::put('levelmember/{id}', 'Web\LevelMemberController@update')->name('levelmember.update');
-    Route::delete('levelmember/{id}', 'Web\LevelMemberController@destroy')->name('levelmember.destroy');
-
-    Route::group(['prefix' => 'medalmember'], function () {
-        Route::get('/', 'Web\MedalMemberController@index')->name('medalmember.index');
-    });
+    Route::resource('levelmember', 'Web\LevelMemberController');
+    Route::resource('medalmember', 'Web\MedalMemberController');
+    Route::resource('bonusgenerasi', 'Web\BonusGenerasiController');
+    Route::resource('batasanpenarikan', 'Web\BatasanPenarikanController');
+    Route::resource('komisitransaksi', 'Web\KomisiTransaksiController');
 });

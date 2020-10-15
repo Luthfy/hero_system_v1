@@ -1,9 +1,9 @@
 @extends('adminlte::page')
 
-@section('title', 'Level Member')
+@section('title', 'Bonus Generasi Member')
 
 @section('content_header')
-    <h1 class="m-0 text-dark">Master Level Member</h1>
+    <h1 class="m-0 text-dark">Master Bonus Generasi Member</h1>
     <hr>
 @stop
 
@@ -27,7 +27,7 @@
 {!! $dataTable->scripts() !!}
 
 <script>
-    function delete_level_member(id)
+    function delete_bonus_generasi(id)
     {
         Swal.fire({
             title: 'Apakah anda yakin?',
@@ -49,20 +49,20 @@
 
                 $.ajax({
                     type : "DELETE",
-                    url : "levelmember/"+id,
+                    url : "bonusgenerasi/"+id,
                     success : function(data, status) {
                         console.log(data)
-                        setTimeout(function(){$('#levelmember_table').DataTable().ajax.reload();}, 1000);
+                        setTimeout(function(){$('#bonusgenerasi-table').DataTable().ajax.reload();}, 1000);
                         Swal.fire(
                             'Dihapus!',
-                            'Level Member telah dihapus',
+                            'Bonus Generasi telah dihapus',
                             'success'
                         )
                     },
                     error : function (xhr) {
                         Swal.fire(
                             'Gagal!',
-                            'Level Member gagal dihapus',
+                            'Bonus Generasi gagal dihapus',
                             'error'
                         )
                     }

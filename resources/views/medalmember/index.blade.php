@@ -1,15 +1,16 @@
 @extends('adminlte::page')
 
-@section('title', 'Level Member')
+@section('title', 'Medal Member')
 
 @section('content_header')
-    <h1 class="m-0 text-dark">Master Level Member</h1>
+    <h1 class="m-0 text-dark">Master Medal Member</h1>
     <hr>
 @stop
 
 @section('content')
     <div class="row">
         <div class="col-12">
+            @include('components.flash_messages')
             <div class="card">
                 <div class="card-body">
                     {!! $dataTable->table() !!}
@@ -26,7 +27,7 @@
 {!! $dataTable->scripts() !!}
 
 <script>
-    function delete_level_member(id)
+    function delete_medal_member(id)
     {
         Swal.fire({
             title: 'Apakah anda yakin?',
@@ -37,7 +38,8 @@
             cancelButtonColor: '#d33',
             confirmButtonText: 'Yes, hapus sekarang!'
         }).then((result) => {
-            if (result) {
+
+            if (result.value) {
 
                 $.ajaxSetup({
                     headers: {
@@ -47,27 +49,24 @@
 
                 $.ajax({
                     type : "DELETE",
-                    url : "levelmember/"+id,
+                    url : "medalmember/"+id,
                     success : function(data, status) {
-
                         console.log(data)
-                        window.location.reload()
-
+                        setTimeout(function(){$('#medalmember_table').DataTable().ajax.reload();}, 1000);
                         Swal.fire(
                             'Dihapus!',
-                            'Level Member telah dihapus',
+                            'Medal Member telah dihapus',
                             'success'
                         )
                     },
                     error : function (xhr) {
                         Swal.fire(
                             'Gagal!',
-                            'Level Member gagal dihapus',
+                            'Medal Member gagal dihapus',
                             'error'
                         )
                     }
                 });
-
 
             }
         })
