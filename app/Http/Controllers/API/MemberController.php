@@ -2,17 +2,16 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Models\Affiliate;
-use App\Helpers\WooWaHelper;
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use Ramsey\Uuid\Uuid;
 use App\Models\Member;
 use App\Models\Wallet;
 use App\Models\Customer;
-use App\Models\LevelMembers;
-use Illuminate\Support\Facades\Auth;
-use Ramsey\Uuid\Uuid;
+use App\Models\Affiliate;
+use App\Models\LevelMember;
 use Illuminate\Support\Str;
+use App\Helpers\WooWaHelper;
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 class MemberController extends Controller
 {
@@ -68,11 +67,15 @@ class MemberController extends Controller
             $member->status_member      = 0;
             $member->save();
 
+            $data["member"] = $member;
+
             $wallet = new Wallet();
             $wallet->uuid_wallet        = Uuid::uuid4()->getHex()->toString();
             $wallet->uuid_member        = $member->uuid_member;
-            $wallet->uuid_level_member  = $this->set_up_level_member($member->id_ref_member)->uuid_level_member;
+            $wallet->id_level_member  = $this->set_up_level_member($member->id_ref_member)->id;
             $wallet->save();
+
+            $data["wallet"] = Wallet::find($wallet->uuid_wallet);
 
             if ($request->app == 1)
             {
@@ -84,6 +87,8 @@ class MemberController extends Controller
                 $customer->name_customer        = $member->name_member;
                 $customer->uuid_member          = $member->uuid_member;
                 $customer->save();
+
+                $data["user"] = Customer::find($customer->uuid_customer);
 
                 $message  = "Selamat Anda Telah Tergabung di Hero Indonesia\n";
                 $message .= "Username : " . $customer->username_customer . "\n";
@@ -100,40 +105,37 @@ class MemberController extends Controller
 
                 $member_refferal = Member::where('id_ref_member', $member->refferal_member)->first();
 
-                $insert = Affiliate::create([
-                    "uuid_affiliate" => Uuid::uuid4()->getHex()->toString(),
-                    "uuid_member" => $member_refferal->uuid_member,
-                    "uuid_member_child" => $member->uuid_member
-                ]);
+                if ($member_refferal != null)
+                {
+                    Affiliate::create([
+                        "uuid_affiliate" => Uuid::uuid4()->getHex()->toString(),
+                        "uuid_member" => $member_refferal->uuid_member,
+                        "uuid_member_child" => $member->uuid_member
+                    ]);
 
-                return response($insert);
-                die();
+                    $message_to_refferal  = "Selamat Downline anda bertambah \n";
+                    $message_to_refferal .= "Atas Nama " . $customer->name_customer . "\n";
+                    $message_to_refferal .= "Kode Refferal Member Anda : " . $member->id_ref_member . "\n";
+
+                    $send_wa_refferal = $wahelper->sendWaMessage($member_refferal->whatsapp_member, $message_to_refferal);
+                }
+
 
                 if ($wahelper->checkWaAvailable($no_wahtsapp) == "exists")
                 {
-                    $send_wa = $wahelper->sendWaMessage($no_wahtsapp, $message);
-
-                    if ($member_refferal != null)
-                    {
-
-                        $message_to_refferal  = "Selamat Downline anda bertambah \n";
-                        $message_to_refferal .= "Atas Nama " . $customer->name_customer . "\n";
-                        $message_to_refferal .= "Kode Refferal Member Anda : " . $member->id_ref_member . "\n";
-
-                        $send_wa_refferal = $wahelper->sendWaMessage($member_refferal->whatsapp_member, $message_to_refferal);
-                    }
+                    $wahelper->sendWaMessage($no_wahtsapp, $message);
                 }
                 else
                 {
                     $this->message .= ", whatssapp tidak valid";
                 }
 
+                $data["token"] = $customer->createToken('customer')->accessToken;
+
                 return [
                   "status" => TRUE,
                   "message"=> "success" . $this->message,
-                  "data" => [
-                    "token" => $customer->createToken('secret')->accessToken,
-                  ]
+                  "data" => $data
                 ];
             }
 
@@ -161,8 +163,7 @@ class MemberController extends Controller
 
         $request->validate($rules, $messages);
 
-        $user     = Auth::user();
-        $member   = Member::find($user->uuid_member);
+        $member = Member::find($request->uuid_member);
 
         if ($request->token == $member->token_member)
         {
@@ -182,7 +183,6 @@ class MemberController extends Controller
                 "message" => 'token anda tidak cocok'
             ]);
         }
-
     }
 
     public function check_member(Request $request)
@@ -197,7 +197,7 @@ class MemberController extends Controller
 
         $request->validate($rules, $messages);
 
-        $member = ($request->user_kind_id == '1') ? Member::where('whatsapp_member', $request->member_id)->first() : Member::where('email_member', $request->member_id)->first();
+        $member = ($request->user_kind_id == '1') ? Member::where('whatsapp_member', $request->member_id)->select("uuid_member", "id_ref_member", "name_member")->first() : Member::where('email_member', $request->member_id)->select("uuid_member", "id_ref_member", "name_member")->first();
 
         if ($member == null)
         {
@@ -256,7 +256,7 @@ class MemberController extends Controller
     {
         if ($refferal == null)
         {
-            return LevelMembers::where('name_level_member','Downloader Free')->first();
+            return LevelMember::where('name_level_member','Downloader Free')->first();
         }
         else
         {
@@ -264,11 +264,11 @@ class MemberController extends Controller
 
             if ($member == 1)
             {
-                return LevelMembers::where('name_level_member','Reseller Free')->first();
+                return LevelMember::where('name_level_member','Reseller Free')->first();
             }
             else
             {
-                return LevelMembers::where('name_level_member','Downloader Free')->first();
+                return LevelMember::where('name_level_member','Downloader Free')->first();
             }
         }
     }

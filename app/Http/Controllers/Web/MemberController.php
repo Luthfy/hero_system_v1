@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Web;
 
+use App\DataTables\MemberDataTable;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
@@ -16,9 +17,14 @@ class MemberController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(MemberDataTable $datatable)
     {
-        return view('users.member.index');
+        $data = [
+            'title' => 'Mater Data Member',
+            'data' => null
+        ];
+
+        return $datatable->render('users.member.index', $data);
     }
 
     /**

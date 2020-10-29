@@ -2,7 +2,7 @@
 
 namespace App\DataTables;
 
-use App\MemberDataTable;
+use App\Models\Member;
 use Yajra\DataTables\Html\Button;
 use Yajra\DataTables\Html\Column;
 use Yajra\DataTables\Html\Editor\Editor;
@@ -21,7 +21,9 @@ class MemberDataTable extends DataTable
     {
         return datatables()
             ->eloquent($query)
-            ->addColumn('action', 'memberdatatable.action');
+            ->addColumn('action', function ($member) {
+                return "<a href='" . url("members/$member->uuid_member") ."' class='btn btn-outline-primary btn-sm'>Detail</a>";
+            });
     }
 
     /**
@@ -30,9 +32,10 @@ class MemberDataTable extends DataTable
      * @param \App\MemberDataTable $model
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function query(MemberDataTable $model)
+    public function query()
     {
-        return $model->newQuery();
+        $member = Member::select();
+        return $this->applyScopes($member);
     }
 
     /**
@@ -43,7 +46,7 @@ class MemberDataTable extends DataTable
     public function html()
     {
         return $this->builder()
-                    ->setTableId('memberdatatable-table')
+                    ->setTableId('member-table')
                     ->columns($this->getColumns())
                     ->minifiedAjax()
                     ->dom('Bfrtip')
@@ -70,8 +73,10 @@ class MemberDataTable extends DataTable
                   ->printable(false)
                   ->width(60)
                   ->addClass('text-center'),
-            Column::make('id'),
-            Column::make('add your columns'),
+            Column::make('id_ref_member'),
+            Column::make('name_member'),
+            Column::make('is_qualified'),
+            Column::make('status_member'),
             Column::make('created_at'),
             Column::make('updated_at'),
         ];

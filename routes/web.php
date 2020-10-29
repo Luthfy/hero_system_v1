@@ -14,9 +14,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function() {
-    return view('home');
-})->middleware('auth');
+// Route::get('/', function() {
+//     return view('home');
+// })->middleware('auth');
 
 Auth::routes([
     "register" => FALSE,
@@ -27,7 +27,7 @@ Auth::routes([
 Route::get('/home', 'HomeController@index')->name('home');
 
 // ROUTE MEMBERS
-Route::get('/members', 'Web\MemberController@index')->name('member');
+Route::resource('members', 'Web\MemberController');
 
 // Route CUSTOMERS
 Route::get('/customers', 'Web\CustomerController@index')->name('customer');

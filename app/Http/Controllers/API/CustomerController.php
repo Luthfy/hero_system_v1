@@ -2,11 +2,22 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Http\Controllers\Controller;
+use App\Models\OTP;
+use Ramsey\Uuid\Uuid;
+use App\Models\Member;
+use App\Models\Customer;
+use App\Helpers\OTPHelper;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class CustomerController extends Controller
 {
+
+    private $_status_customer   = FALSE;
+    private $_message_customer  = "";
+
     /**
      * Display a listing of the resource.
      *
@@ -14,7 +25,7 @@ class CustomerController extends Controller
      */
     public function index()
     {
-        //
+        return response("not found", 404);
     }
 
     /**
@@ -25,7 +36,55 @@ class CustomerController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $rules = [
+            'uuid_member'       => 'required',
+            'email_customer'    => 'required',
+            'username_customer' => 'required',
+            'password_customer' => 'required',
+            'name_customer'     => 'required'
+        ];
+
+        $messages = [
+            'uuid_member.required'          => 'Member Hero Anda Tidak Ditemukan',
+            'email_customer.required'       => 'Email Anda Tidak Boleh Kosong',
+            'username_customer.required'    => 'Username Anda Tidak Boleh Kosong',
+            'password_customer.required'    => 'Password Anda Tidak Boleh Kosong',
+            'name_customer.required'        => 'Nama Anda Tidak Boleh Kosong'
+        ];
+
+        $request->validate($rules, $messages);
+
+        if (Member::find($request->uuid_member))
+        {
+            $customer = new Customer();
+            $customer->uuid_customer        = Uuid::uuid4()->getHex()->toString();
+            $customer->email_customer       = $request->email_customer;
+            $customer->username_customer    = $request->whatsapp_customer;
+            $customer->password_customer    = $request->password_customer;
+            $customer->name_customer        = $request->name_customer;
+            $customer->uuid_member          = $request->uuid_member;
+            $register = $customer->save();
+
+            if ($register)
+            {
+                $user = Customer::find($customer->uuid_custmer);
+                return response()->json([
+                    "status" => TRUE,
+                    "message" => "success",
+                    "data" => [
+                        "user" => $user,
+                        "token" => $user->createToken('customer')->accessToken
+                    ]
+                    ], 200);
+            }
+        }
+        else
+        {
+            return response()->json([
+                "status" => FALSE,
+                "message" => "member not found"
+            ], 200);
+        }
     }
 
     /**
@@ -36,7 +95,23 @@ class CustomerController extends Controller
      */
     public function show($id)
     {
-        //
+        $user = Customer::find($id);
+
+        if ($user)
+        {
+            return response()->json([
+                "status" => TRUE,
+                "message" => "success",
+                "data" => $user
+            ], 200);
+        }
+        else
+        {
+            return response()->json([
+                "status" => FALSE,
+                "message" => "user not found",
+            ], 200);
+        }
     }
 
     /**
@@ -48,7 +123,28 @@ class CustomerController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $user = Customer::find($id);
+        $user->name_customer = $request->name_customer;
+        $user->birthday_customer = $request->birthday_customer;
+        $user->idcard_customer = $request->idcard_customer;
+        $update = $user->save();
+
+        if ($update)
+        {
+            return response()->json([
+                "status" => TRUE,
+                "message" => "success",
+                "data" => $user
+            ], 200);
+        }
+        else
+        {
+            return response()->json([
+                "status" => FALSE,
+                "message" => "something is wrong"
+            ], 200);
+        }
+
     }
 
     /**
@@ -59,6 +155,198 @@ class CustomerController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $delete = Customer::find($id)->delete();
+
+        if ($delete)
+        {
+            return response()->json([
+                "status" => TRUE,
+                "message" => "delete successfully",
+            ], 200);
+        }
+    }
+
+    public function login(Request $request)
+    {
+        $rules = [
+            'username' => 'required',
+            'password' => 'required',
+            'code_area' => 'required'
+        ];
+
+        $message = [
+            'username.required' => 'Username anda tidak boleh kosong',
+            'password.required' => 'Password anda tidak boleh kosong',
+            'code_area.required' => 'Kode Area anda tidak ditemukan'
+        ];
+
+        $request->validate($rules, $message);
+
+        $username   = $request->username;
+        $password   = $request->password;
+        $code_area  = $request->code_area;
+
+        $user = Customer::where('username_customer', $username)->first();
+
+        if ($user)
+        {
+            if (Hash::check($password, $user->password_customer))
+            {
+                $receiver = "+62" . $user->username_customer;
+
+                $otp = new OTPHelper();
+                $has_send = $otp->send_otp($receiver, $user->uuid_customer, 1);
+
+                $this->_status_customer = TRUE;
+                $this->_message_customer = "success, " . $has_send["message"];
+
+                $token = $user->createToken('secret')->accessToken;
+                $data = [
+                    "user" => $user,
+                    "token" => $token
+                ];
+            }
+            else
+            {
+                $this->_message_customer = "password kamu tidak cocok";
+            }
+        }
+        else
+        {
+            $this->_message_customer = "username kamu tidak ditemukan";
+        }
+
+        return response()->json([
+            "status" => $this->_status_customer,
+            "message" => $this->_message_customer,
+            "data" => $data
+        ], 200);
+    }
+
+    public function activated_by_otp(Request $request)
+    {
+        $rules = [
+            'otp' => 'required'
+        ];
+
+        $message = [
+            'otp.required' => 'Kode Otp tidak boleh kosong'
+        ];
+
+        $request->validate($rules, $message);
+
+        $otp = $request->otp;
+        $fcm = $request->fcm;
+
+        $user_id = Auth::id();
+
+        $otp = OTP::where('code', $otp)->where('user_type', 1)->where('uuid_user', $user_id)->first();
+
+        if ($otp)
+        {
+            $user = Customer::find($otp->uuid_user);
+            $user->status = 1;
+            $user->fcm = $fcm;
+            $update = $user->save();
+
+            if ($update)
+            {
+                return response()->json([
+                    "status" => TRUE,
+                    "message" => "success",
+                    "data" => $user
+                ], 200);
+            }
+            else
+            {
+                return response()->json([
+                    "status" => FALSE,
+                    "message" => "something is wrong",
+                    "data" => $user
+                ], 200);
+            }
+
+        }
+        else
+        {
+            return response()->json([
+                "status" => FALSE,
+                "message" => "otp is wrong"
+            ], 404);
+        }
+
+    }
+
+    public function verified_auth()
+    {
+        $user = Auth::user();
+
+        if ($user)
+        {
+            return response([
+                "status" => TRUE,
+                "message" => "success",
+                "data" => $user
+            ], 200);
+        }
+        else
+        {
+            return response([
+                "status" => FALSE,
+                "message" => "user not found",
+                "error" => "your token not valid"
+            ], 200);
+        }
+    }
+
+    public function logout(Request $request)
+    {
+        $revoke = $request->user()->token()->revoke();
+
+        if ($revoke)
+        {
+            return response()->json([
+                'status' => TRUE,
+                'message' => 'your has been logout'
+            ],200);
+        }
+        else
+        {
+            return response()->json([
+                'status' => FALSE,
+                'message' => 'something is wrong'
+            ], 422);
+        }
+    }
+
+    public function change_picture(Request $request)
+    {
+        if ($request->hasFile('profile_picture'))
+        {
+            $request->validate([
+                'profile_picture' => 'mimes:png,jpg,jpeg|max:1024'
+            ]);
+
+            $filename  = time() . '_' . $request->file('profile_picture')->getClientOriginalName();
+
+            $filepath = $request->file('profile_picture')->storeAs('public/storage/customers', $filename);
+
+            $user = Customer::find(Auth::id());
+            $user->photo_customer = $filepath;
+            $user->save();
+
+            return response()->json([
+                "status" => TRUE,
+                "message" => "success",
+                "data" => $user
+            ], 200);
+        }
+        else
+        {
+            return response()->json([
+                "status" => FALSE,
+                "message" => "image is not found"
+            ], 200);
+        }
     }
 }

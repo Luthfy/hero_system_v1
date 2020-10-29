@@ -18,7 +18,7 @@ class CreateOtpClientsTable extends Migration
             $table->uuid('uuid')->unique();
             $table->integer('code');
             $table->integer('user_type')->default('0');
-            $table->uuid('uuid_member')->index();
+            $table->uuid('uuid_user')->index();
             $table->timestamps();
         });
     }
