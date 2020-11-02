@@ -80,5 +80,16 @@ Route::group(['prefix' => 'v1'], function () {
 
     /* PPOB */
     Route::post('ppob/test_connection', 'API\PPOBController@test_connection')->middleware('auth:api-customer');
+
+    Route::post('ppob/pembayaran/kategori', 'API\PPOBController@pembayaran_kategori')->middleware('auth:api-customer');
+    Route::post('ppob/pembayaran/operator', 'API\PPOBController@pembayaran_operator')->middleware('auth:api-customer');
+    Route::post('ppob/pembayaran/produk', 'API\PPOBController@pembayaran_produk')->middleware('auth:api-customer');
+    Route::post('ppob/pembayaran/detail', 'API\PPOBController@pembayaran_detail')->middleware('auth:api-customer');
+
+    Route::post('ppob/pembelian/kategori', 'API\PPOBController@pembelian_kategori')->middleware('auth:api-customer');
+    Route::post('ppob/pembelian/operator', 'API\PPOBController@pembelian_operator')->middleware('auth:api-customer');
+    Route::post('ppob/pembelian/produk', 'API\PPOBController@pembelian_produk')->middleware('auth:api-customer');
+    Route::post('ppob/pembelian/detail', 'API\PPOBController@pembelian_detail')->middleware('auth:api-customer');
+
 });
 

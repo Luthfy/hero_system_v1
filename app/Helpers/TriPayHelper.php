@@ -28,7 +28,7 @@ class TriPayHelper
 
     private $api_key = "XzfMJLuGjWELYkvLcg80Rc1e7NFhxufb";
     private $web_url = "https://tripay.co.id/api/v2/";
-    private $pin     = "";
+    private $pin     = "8571";
     private $headers = array();
 
     public function __construct()
@@ -47,11 +47,20 @@ class TriPayHelper
         return $cekserver->json();
     }
 
-    public function kategori_pembelian()
+    public function tripay_post($url, $data = null)
     {
-        $activity = "get kategori pembelian tripay";
+        $activity = "melakukan request ke tripay";
 
-
+        if ($data == null)
+        {
+            $request = Http::withHeaders($this->headers)->post($this->web_url . $url);
+            return $request->json();
+        }
+        else
+        {
+            $request = Http::withHeaders($this->headers)->post($this->web_url . $url, $data);
+            return $request->json();
+        }
     }
 
     public function pembelian_prabayar($data)
@@ -89,11 +98,6 @@ class TriPayHelper
                         ->json();
         }
 
-    }
-
-    public function tripay_produk_pembelian()
-    {
-        return Http::post($this->web_url . 'pembelian/category');
     }
 
     public function handleCallback(Request $request)
