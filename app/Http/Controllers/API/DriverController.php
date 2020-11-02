@@ -25,7 +25,7 @@ class DriverController extends Controller
      */
     public function index()
     {
-        //
+        return response()->json(["not found", 404]);
     }
 
     /**
@@ -60,7 +60,7 @@ class DriverController extends Controller
             $driver->uuid_driver        = Uuid::uuid4()->getHex()->toString();
             $driver->email_driver       = $request->email_driver;
             $driver->username_driver    = $request->username_driver;
-            $driver->password_driver    = $request->password_driver;
+            $driver->password_driver    = bcrypt($request->password_driver);
             $driver->name_driver        = $request->name_driver;
             $driver->uuid_member        = $request->uuid_member;
             $register = $driver->save();
@@ -213,7 +213,7 @@ class DriverController extends Controller
                 $receiver = $code_area . $user->username_driver;
 
                 $otp = new OTPHelper();
-                $has_send = $otp->send_otp($receiver, $user->uuid_driver, 1);
+                $has_send = $otp->send_otp($receiver, $user->uuid_driver, 2);
 
                 $this->_status_driver = TRUE;
                 $this->_message_driver = "success, " . $has_send["message"];
@@ -270,7 +270,7 @@ class DriverController extends Controller
 
         $user_id = Auth::id();
 
-        $otp = OTP::where('code', $otp)->where('user_type', 1)->where('uuid_user', $user_id)->first();
+        $otp = OTP::where('code', $otp)->where('user_type', 2)->where('uuid_user', $user_id)->first();
 
         if ($otp)
         {

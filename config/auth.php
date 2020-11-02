@@ -55,6 +55,11 @@ return [
         'api-driver' => [
             'driver' => 'passport',
             'provider' => 'drivers'
+        ],
+
+        'api-merchant' => [
+            'driver' => 'passport',
+            'provider' => 'merchant'
         ]
     ],
 

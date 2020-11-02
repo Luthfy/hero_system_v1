@@ -58,7 +58,25 @@ Route::group(['prefix' => 'v1'], function () {
     Route::put('driver/{id}', 'API\DriverController@update')->middleware('auth:api-driver')->name('driver.update');
 
     Route::delete('driver/{id}', 'API\DriverController@destroy')->middleware('auth:api-driver')->name('driver.destroy');
+
     /* END DRIVER */
+
+    /* MERCHANT */
+    Route::post('merchant', 'API\MerchantController@login')->name('merchant.login');
+    Route::post('merchant/register', 'API\MerchantController@store')->name('merchant.register');
+    Route::post('merchant/otp', 'API\MerchantController@activated_by_otp')->middleware('auth:api-merchant')->name('merchant.otp');
+    Route::post('merchant/logout', 'API\MerchantController@logout')->middleware('auth:api-merchant')->name('merchant.logout');
+    Route::post('merchant/dokumen_kelengkapan', 'API\MerchantController@upload_document')->middleware('auth:api-merchant')->name('merchant.dokumen');
+
+
+    Route::get('merchant', 'API\MerchantController@verified_auth')->middleware('auth:api-merchant');
+    Route::get('merchant/{id}', 'API\MerchantController@show')->middleware('auth:api-merchant')->name('merchant.detail');
+
+    Route::put('merchant/{id}', 'API\MerchantController@update')->middleware('auth:api-merchant')->name('merchant.update');
+
+    Route::delete('merchant/{id}', 'API\MerchantController@destroy')->middleware('auth:api-merchant')->name('merchant.destroy');
+
+    /* END MERCHANT */
 
     /* PPOB */
     Route::post('ppob/test_connection', 'API\PPOBController@test_connection')->middleware('auth:api-customer');
