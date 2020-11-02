@@ -8,22 +8,92 @@ use Illuminate\Support\Facades\Request;
 
 class TriPayHelper
 {
+    /**
+     * Status Code PPOB :
+     * 0 = gagal sebelum dilakukan transaksi
+     * 1 = sedang dalam antrian
+     * 2 = sukses melakukan transaksi
+     * 3 = gagal dalam proses transaksi
+     * 4 = dibatalkan karena suatu alasan
+    */
 
-    private $api_key = "ad8gJo5r0i0dUjTj6wNkgUfcHXQGwT47";
+    /**
+     * User Type :
+     * 0 = From Back Office
+     * 1 = Mobile Customer
+     * 2 = Mobile Driver
+     * 3 = Mobile Merchant
+    */
+
+
+    private $api_key = "XzfMJLuGjWELYkvLcg80Rc1e7NFhxufb";
     private $web_url = "https://tripay.co.id/api/v2/";
+    private $pin     = "";
     private $headers = array();
 
     public function __construct()
     {
         $this->headers = array(
-            'Accept: application/json',
-            'Authorization: Bearer' . $this->api_key
+            'Accept' => 'application/json',
+            'Authorization'=> 'Bearer ' . $this->api_key
         );
+    }
+
+    public function server_connection()
+    {
+        $activity = "testing server connection tripay";
+
+        $cekserver = Http::withHeaders($this->headers)->post($this->web_url . 'cekserver/');
+        return $cekserver->json();
+    }
+
+    public function kategori_pembelian()
+    {
+        $activity = "get kategori pembelian tripay";
+
+
+    }
+
+    public function pembelian_prabayar($data)
+    {
+        $activity = "testing server connection tripay";
+
+        if ($data['inquiry'] == 'PLN')
+        {
+            $data = [
+                'inquiry'       => $data['inquiry'],
+                'code'          => $data['kode_produk'],
+                'phone'         => $data['no_hp'],
+                'no_meter_pln'  => $data['no_pln'],
+                'api_trxid'     => "INVPLN" . time(),
+                'pin'           => $this->pin
+            ];
+
+            return Http::withHeaders($this->headers)
+                        ->post($this->web_url . 'transaksi/pembelian', $data)
+                        ->json();
+        }
+        else
+        {
+            $data = [
+                'inquiry'       => $data['inquiry'],
+                'code'          => $data['kode_produk'],
+                'phone'         => $data['no_hp'],
+                'no_meter_pln'  => $data['no_pln'],
+                'api_trxid'     => '',
+                'pin'           => $this->pin
+            ];
+
+            return Http::withHeaders($this->headers)
+                        ->post($this->web_url . 'transaksi/pembelian', $data)
+                        ->json();
+        }
+
     }
 
     public function tripay_produk_pembelian()
     {
-        return Http::post($this->web_url . 'pembelian/categpry');
+        return Http::post($this->web_url . 'pembelian/category');
     }
 
     public function handleCallback(Request $request)

@@ -39,7 +39,7 @@ class CustomerController extends Controller
         $rules = [
             'uuid_member'       => 'required',
             'email_customer'    => 'required',
-            'username_customer' => 'required',
+            'whatsapp_customer' => 'required',
             'password_customer' => 'required',
             'name_customer'     => 'required'
         ];
@@ -47,7 +47,7 @@ class CustomerController extends Controller
         $messages = [
             'uuid_member.required'          => 'Member Hero Anda Tidak Ditemukan',
             'email_customer.required'       => 'Email Anda Tidak Boleh Kosong',
-            'username_customer.required'    => 'Username Anda Tidak Boleh Kosong',
+            'whatsapp_customer.required'    => 'Username Anda Tidak Boleh Kosong',
             'password_customer.required'    => 'Password Anda Tidak Boleh Kosong',
             'name_customer.required'        => 'Nama Anda Tidak Boleh Kosong'
         ];
@@ -60,14 +60,14 @@ class CustomerController extends Controller
             $customer->uuid_customer        = Uuid::uuid4()->getHex()->toString();
             $customer->email_customer       = $request->email_customer;
             $customer->username_customer    = $request->whatsapp_customer;
-            $customer->password_customer    = $request->password_customer;
+            $customer->password_customer    = bcrypt($request->password_customer);
             $customer->name_customer        = $request->name_customer;
             $customer->uuid_member          = $request->uuid_member;
             $register = $customer->save();
 
             if ($register)
             {
-                $user = Customer::find($customer->uuid_custmer);
+                $user = Customer::find($customer->uuid_customer);
                 return response()->json([
                     "status" => TRUE,
                     "message" => "success",
@@ -75,7 +75,7 @@ class CustomerController extends Controller
                         "user" => $user,
                         "token" => $user->createToken('customer')->accessToken
                     ]
-                    ], 200);
+                ], 200);
             }
         }
         else
@@ -123,10 +123,27 @@ class CustomerController extends Controller
      */
     public function update(Request $request, $id)
     {
+
         $user = Customer::find($id);
+
+        if ($request->hasFile('photo_customer'))
+        {
+            $request->validate([
+                'photo_customer' => 'mimes:png,jpg,jpeg|max:1024'
+            ]);
+
+            $filename  = time() . str_replace(" ", "", $request->file('photo_customer')->getClientOriginalName());
+
+            $filepath = $request->file('photo_customer')->storeAs('public/storage/customers/profile', $filename);
+
+            @unlink($user->photo_customer);
+
+            $user->photo_customer = $filepath;
+
+        }
+
         $user->name_customer = $request->name_customer;
         $user->birthday_customer = $request->birthday_customer;
-        $user->idcard_customer = $request->idcard_customer;
         $update = $user->save();
 
         if ($update)
@@ -153,8 +170,10 @@ class CustomerController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
+        $revoke = $request->user()->token()->revoke();
+
         $delete = Customer::find($id)->delete();
 
         if ($delete)
@@ -192,7 +211,7 @@ class CustomerController extends Controller
         {
             if (Hash::check($password, $user->password_customer))
             {
-                $receiver = "+62" . $user->username_customer;
+                $receiver = $code_area . $user->username_customer;
 
                 $otp = new OTPHelper();
                 $has_send = $otp->send_otp($receiver, $user->uuid_customer, 1);
@@ -205,22 +224,32 @@ class CustomerController extends Controller
                     "user" => $user,
                     "token" => $token
                 ];
+
+                return response()->json([
+                    "status" => $this->_status_customer,
+                    "message" => $this->_message_customer,
+                    "data" => $data
+                ], 200);
             }
             else
             {
                 $this->_message_customer = "password kamu tidak cocok";
+
+                return response()->json([
+                    "status" => $this->_status_customer,
+                    "message" => $this->_message_customer
+                ], 200);
             }
         }
         else
         {
             $this->_message_customer = "username kamu tidak ditemukan";
-        }
 
-        return response()->json([
-            "status" => $this->_status_customer,
-            "message" => $this->_message_customer,
-            "data" => $data
-        ], 200);
+            return response()->json([
+                "status" => $this->_status_customer,
+                "message" => $this->_message_customer
+            ], 200);
+        }
     }
 
     public function activated_by_otp(Request $request)
@@ -319,20 +348,23 @@ class CustomerController extends Controller
         }
     }
 
-    public function change_picture(Request $request)
+    public function upload_document(Request $request)
     {
-        if ($request->hasFile('profile_picture'))
+        if ($request->hasFile('foto_ktp'))
         {
             $request->validate([
-                'profile_picture' => 'mimes:png,jpg,jpeg|max:1024'
+                'foto_ktp' => 'mimes:png,jpg,jpeg|max:1024'
             ]);
 
-            $filename  = time() . '_' . $request->file('profile_picture')->getClientOriginalName();
+            $filename  = time() . '_ktp_' . str_replace(" ", "", $request->file('foto_ktp')->getClientOriginalName());
 
-            $filepath = $request->file('profile_picture')->storeAs('public/storage/customers', $filename);
+            $filepath = $request->file('foto_ktp')->storeAs('public/storage/customers', $filename);
 
             $user = Customer::find(Auth::id());
-            $user->photo_customer = $filepath;
+
+            @unlink($user->idcard_customer);
+
+            $user->idcard_customer = $filepath;
             $user->save();
 
             return response()->json([
@@ -345,7 +377,7 @@ class CustomerController extends Controller
         {
             return response()->json([
                 "status" => FALSE,
-                "message" => "image is not found"
+                "message" => "document is not found"
             ], 200);
         }
     }

@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers\Web;
 
-use App\Http\Controllers\Controller;
+use App\Models\Driver;
+use App\Helpers\OTPHelper;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Hash;
 
 class DriverController extends Controller
 {
@@ -86,4 +89,5 @@ class DriverController extends Controller
     {
         //
     }
+
 }

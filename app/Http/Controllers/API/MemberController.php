@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use Ramsey\Uuid\Uuid;
+use App\Models\Driver;
 use App\Models\Member;
 use App\Models\Wallet;
 use App\Models\Customer;
@@ -131,6 +132,67 @@ class MemberController extends Controller
                 }
 
                 $data["token"] = $customer->createToken('customer')->accessToken;
+
+                return [
+                  "status" => TRUE,
+                  "message"=> "success" . $this->message,
+                  "data" => $data
+                ];
+            }
+            else if ($request->app == 2)
+            {
+                $driver = new Driver();
+                $driver->uuid_driver        = Uuid::uuid4()->getHex()->toString();
+                $driver->email_driver       = $member->email_member;
+                $driver->username_driver    = $member->whatsapp_member;
+                $driver->password_driver    = $member->password_member;
+                $driver->name_driver        = $member->name_member;
+                $driver->uuid_member        = $member->uuid_member;
+                $driver->save();
+
+                $data["user"] = Driver::find($driver->uuid_driver);
+
+
+                $message  = "Selamat Anda Telah Tergabung di Hero Indonesia Sebagai Driver \n";
+                $message .= "Username : " . $driver->username_driver . "\n";
+                $message .= "Password : " . $request->password . "\n";
+                $message .= "\n";
+                $message .= "Untuk mengaktifkan Status Member Anda Silakan Masukan Token \n";
+                $message .= "Token Member : *" . $member->token_member . "*\n";
+                $message .= " \n";
+                $message .= "Terimakasih\n";
+                $message .= "Admin Hero\n";
+
+                $wahelper       = new WooWaHelper();
+                $no_wahtsapp    = $request->area_code ."".$request->whatsapp;
+
+                $member_refferal = Member::where('id_ref_member', $member->refferal_member)->first();
+
+                if ($member_refferal != null)
+                {
+                    Affiliate::create([
+                        "uuid_affiliate" => Uuid::uuid4()->getHex()->toString(),
+                        "uuid_member" => $member_refferal->uuid_member,
+                        "uuid_member_child" => $member->uuid_member
+                    ]);
+
+                    $message_to_refferal  = "Selamat Downline anda bertambah \n";
+                    $message_to_refferal .= "Atas Nama " . $driver->name_driver . "\n";
+                    $message_to_refferal .= "Kode Refferal Member Anda : " . $member->id_ref_member . "\n";
+
+                    $send_wa_refferal = $wahelper->sendWaMessage($member_refferal->whatsapp_member, $message_to_refferal);
+                }
+
+                if ($wahelper->checkWaAvailable($no_wahtsapp) == "exists")
+                {
+                    $wahelper->sendWaMessage($no_wahtsapp, $message);
+                }
+                else
+                {
+                    $this->message .= ", whatssapp tidak valid";
+                }
+
+                $data["token"] = $driver->createToken('driver')->accessToken;
 
                 return [
                   "status" => TRUE,
