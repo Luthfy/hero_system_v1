@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use App\Helpers\TriPayHelper;
 use App\Http\Controllers\Controller;
 
-class PembelianController extends Controller
+class PembelianCustomerController extends Controller
 {
     private $_client = null;
 

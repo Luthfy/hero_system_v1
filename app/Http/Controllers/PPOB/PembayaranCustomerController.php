@@ -6,7 +6,7 @@ use App\Helpers\TriPayHelper;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-class PembayaranController extends Controller
+class PembayaranCustomerController extends Controller
 {
     private $_client = null;
 
