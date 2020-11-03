@@ -80,6 +80,7 @@ Route::group(['prefix' => 'v1'], function () {
 
     /* PPOB */
     Route::post('ppob/test_connection', 'API\PPOBController@test_connection')->middleware('auth:api-customer');
+    Route::post('ppob/check_saldo', 'API\PPOBController@check_saldo')->middleware('auth:api-customer');
 
     Route::post('ppob/pembayaran/kategori', 'API\PPOBController@pembayaran_kategori')->middleware('auth:api-customer');
     Route::post('ppob/pembayaran/operator', 'API\PPOBController@pembayaran_operator')->middleware('auth:api-customer');

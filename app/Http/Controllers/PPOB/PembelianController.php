@@ -50,4 +50,39 @@ class PembelianController extends Controller
         $request = $this->_client->tripay_post('pembelian/produk/cek', $data);
         return $request;
     }
+
+    public function transaksi_pembelian($data)
+    {
+        $data_tripay = array();
+
+        if ($data['type'] == 'PLN')
+        {
+            $data_tripay = [
+                'inquiry'       => 'PLN',
+                'code'          => $data['kode_produk'],
+                'phone'         => $data['no_hp'],
+                'no_meter_pln'  => $data['no_pln'],
+                'api_trxid'     => "INVPLN" . time()
+            ];
+        }
+        else
+        {
+            $data_tripay = [
+                'inquiry'       => 'I',
+                'code'          => $data['kode_produk'],
+                'phone'         => $data['no_hp'],
+                'no_meter_pln'  => $data['no_pln'],
+                'api_trxid'     => 'INV'
+            ];
+        }
+        // $d_tripay = array();
+        // $data_tripay = array(
+        //     'inquiry'   => $data['type'] == 'PLN' ? 'PLN' : 'I', // 'PLN' untuk pembelian PLN Prabayar, atau 'I' (i besar) untuk produk lainnya
+        //     'code'      => $data['produk'], // kode produk
+        //     'phone'         => $data['phone'], // nohp pembeli
+        //     'no_meter_pln' => '1234567890', // khusus untuk pembelian token PLN prabayar
+        //     'api_trxid' => 'INV757', // ID transaksi dari server Anda. (tidak wajib, maks. 25 karakter)
+        //     'pin' => '3964', // pin member
+        // );
+    }
 }

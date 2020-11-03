@@ -42,6 +42,12 @@ class PPOBController extends Controller
         return $tripay->server_connection();
     }
 
+    public function check_saldo()
+    {
+        $tripay = new TriPayHelper();
+        return $tripay->check_balance();
+    }
+
     public function pembayaran_kategori()
     {
         $pembayaran = new PembayaranController();

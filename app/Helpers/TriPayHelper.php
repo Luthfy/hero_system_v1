@@ -47,6 +47,14 @@ class TriPayHelper
         return $cekserver->json();
     }
 
+    public function check_balance()
+    {
+        $activity = "testing server connection tripay";
+
+        $balance = Http::withHeaders($this->headers)->post($this->web_url . 'ceksaldo/');
+        return $balance->json();
+    }
+
     public function tripay_post($url, $data = null)
     {
         $activity = "melakukan request ke tripay";
